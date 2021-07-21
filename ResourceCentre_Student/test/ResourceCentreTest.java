@@ -97,12 +97,35 @@ public class ResourceCentreTest {
 	public void testRetrieveAllChromebook() {
 		//fail("Not yet implemented");
 		// write your code here
+		//•	Test that Item list is not null
+		assertNotNull("Test if there is a valid Chromebook arraylist to retrieve from", chromebookList);
+		
+		//•	Test that we retrieve info for 2 items if the Item list has 2 items
+		assertEquals("test that there will be 2 items being retrieved if Chromebook arraylist has 2 items", 2, chromebookList.size());
+		
+		//•	Test that the info retrieved from the Item list is the same as the info put in from the ResourceCentre
+		String allChromebook = ResourceCentre.retrieveAllChromebook(chromebookList);
+		String testOutput = "";
+		testOutput = String.format("%-10s %-30s %-10s %-10s %-20d\n","CC0011", "Nikon HDSLR", "Yes", "", 40);
+		testOutput += String.format("%-10s %-30s %-10s %-10s %-20d\n","CC0012", "Sony DSC-RX100M7", "Yes", "", 20);
+	
+		assertEquals("Check that ViewAllCamcorderlist", testOutput, allChromebook);
+		
 	}
 
 	@Test
 	public void testDoLoanCamcorder() {
 		//fail("Not yet implemented");
 		// write your code here
+		//-	Test that an unavailable item cannot be loaned
+		cc1.setIsAvailable(false);
+		boolean isAvailable = cc1.getIsAvailable();
+		boolean isLoanable = ResourceCentre.doLoanCamcorder(camcorderList, "CC0011", "2021-21-7");
+		assertSame("test that we cannot loan out an unavailable item", isAvailable, isLoanable);
+		//-	Test that an item becomes unavailable after being loaned
+		cc1.setIsAvailable(true);
+		ResourceCentre.doLoanCamcorder(camcorderList, "CC0011", "2021-21-7");
+		assertEquals("test that item is unavailable", false, cc1.getIsAvailable());
 		
 	}
 	
@@ -110,18 +133,42 @@ public class ResourceCentreTest {
 	public void testDoLoanChromebook() {
 		//fail("Not yet implemented");
 		// write your code here
+		//-	Test that an unavailable item cannot be loaned
+				cb1.setIsAvailable(false);
+				boolean isAvailable = cb1.getIsAvailable();
+				boolean isLoanable = ResourceCentre.doLoanChromebook(chromebookList, "CB0011", "2021-21-7");
+				assertSame("test that we cannot loan out an unavailable item", isAvailable, isLoanable);
+				//-	Test that an item becomes unavailable after being loaned
+				cb1.setIsAvailable(true);
+				ResourceCentre.doLoanChromebook(chromebookList, "CB0011", "2021-21-7");
+				assertEquals("test that item is unavailable", false, cb1.getIsAvailable());
 	}
 	
 	@Test
 	public void testDoReturnCamcorder() {
 		//fail("Not yet implemented");
 		// write your code here
-		
+// -	Test that we cannot return an available item (not loaned)
+		cc1.setIsAvailable(true);
+		boolean isReturnable = ResourceCentre.doReturnCamcorder(camcorderList, "CC0011");
+		assertSame("test that an available item cannot be returned", cc1.getIsAvailable(), isReturnable);
+		// -	Test that the item’s availability changes to true after returning
+		cc1.setIsAvailable(false);
+		boolean isReturned = ResourceCentre.doReturnCamcorder(camcorderList, "CC0011");
+		assertEquals("test that the item availability changes back to true after returning", true, isReturned);
 	}
 	@Test
 	public void testDoReturnChromebook() {
 		//fail("Not yet implemented");
 		// write your code here
+		// -	Test that we cannot return an available item (not loaned)
+				cb1.setIsAvailable(true);
+				boolean isReturnable = ResourceCentre.doReturnChromebook(chromebookList, "CB0011");
+				assertSame("test that an available item cannot be returned", cb1.getIsAvailable(), isReturnable);
+				// -	Test that the item’s availability changes to true after returning
+				cb1.setIsAvailable(false);
+				boolean isReturned = ResourceCentre.doReturnChromebook(chromebookList, "CB0011");
+				assertEquals("test that the item availability changes back to true after returning", true, isReturned);
 	}
 	
 	@After
